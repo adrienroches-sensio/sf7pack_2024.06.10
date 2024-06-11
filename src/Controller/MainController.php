@@ -18,4 +18,10 @@ class MainController extends AbstractController
 
         return new Response('Hello ' . $name);
     }
+
+    #[Route('/contact', name: 'app_main_contact', methods: ['GET'])]
+    public function contact(): Response
+    {
+        return new Response('Contact');
+    }
 }
