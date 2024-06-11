@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class MainController extends AbstractController
 {
-    #[Route(path: '/')]
+    #[Route(path: '/', name: 'homepage', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $name = $request->query->get('name');
