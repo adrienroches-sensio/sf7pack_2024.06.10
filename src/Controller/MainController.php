@@ -16,20 +16,12 @@ class MainController extends AbstractController
     {
         $name = $request->query->get('name');
 
-        $html = <<<"HTML"
-        <html>
-            <body>
-                <h1>Hello {$name}</h1>
-            </body>
-        </html>
-        HTML;
-
-        return new Response($html);
+        return $this->render('main/index.html.twig', ['name' => $name]);
     }
 
     #[Route('/contact', name: 'app_main_contact', methods: ['GET'])]
     public function contact(): Response
     {
-        return new Response('Contact');
+        return $this->render('main/contact.html.twig');
     }
 }
