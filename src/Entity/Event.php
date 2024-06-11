@@ -13,7 +13,7 @@ class Event
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column()]
+    #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -43,8 +43,11 @@ class Event
     /**
      * @var Collection<int, Organization>
      */
-    #[ORM\ManyToMany(targetEntity: Organization::class, mappedBy: 'events')]
+    #[ORM\ManyToMany(targetEntity: Organization::class, inversedBy: 'events')]
     private Collection $organizations;
+
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    private ?Project $project = null;
 
     public function __construct()
     {
@@ -98,7 +101,7 @@ class Event
         return $this->prerequisites;
     }
 
-    public function setPrerequisites(?string $prerequisites): static
+    public function setPrerequisites(string $prerequisites): static
     {
         $this->prerequisites = $prerequisites;
 
@@ -171,7 +174,6 @@ class Event
     {
         if (!$this->organizations->contains($organization)) {
             $this->organizations->add($organization);
-            $organization->addEvent($this);
         }
 
         return $this;
@@ -179,9 +181,19 @@ class Event
 
     public function removeOrganization(Organization $organization): static
     {
-        if ($this->organizations->removeElement($organization)) {
-            $organization->removeEvent($this);
-        }
+        $this->organizations->removeElement($organization);
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): static
+    {
+        $this->project = $project;
 
         return $this;
     }
