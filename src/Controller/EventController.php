@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\Requirement;
 
 class EventController extends AbstractController
 {
@@ -53,5 +54,18 @@ class EventController extends AbstractController
         }
 
         return $this->json($events);
+    }
+
+    #[Route(
+        '/api/events/{id}',
+        name: 'api_event_show',
+        requirements: [
+            'id' => Requirement::DIGITS,
+        ],
+        methods: ['GET']
+    )]
+    public function show(Event $event): JsonResponse
+    {
+        return $this->json(['id' => $event->getId(), 'name' => $event->getName()]);
     }
 }
