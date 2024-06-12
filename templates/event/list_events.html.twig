@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'List events' %}
+
+{% block body %}
+    <section id="list-events">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 m-auto">
+                    <h1 class="fw-bolder" style="color: limegreen;">List all events</h1>
+                    <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
+                        {% for TODO %}
+                            <div class="col">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <div class="card-title">
+                                            <h5 class="fw-bolder mb-0">
+                                                <a href="TODO"
+                                                   class="stretched-link text-decoration-none"
+                                                   style="color: limegreen;">TODO</a>
+                                            </h5>
+                                        </div>
+                                        <div class="card-text d-flex justify-content-between">
+                                            <div>
+                                                {% if TODO (has project) %}
+                                                    <p class="my-0">TODO</p>
+                                                {% endif %}
+                                                {% if TODO (has organization) %}
+                                                    <p class="my-0">TODO (organizations names joinded with ', ')</p>
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                <p class="mb-0">From <span
+                                                            class="fw-semibold">TODO (start At)</span>
+                                                    to
+                                                    <span class="fw-semibold">TODO (end at)</span></p>
+                                                <p class="my-0 fst-italic">TODO (count volunteers) volunteers
+                                                    yet.</p>
+                                                <p class="mt-0">Accessible
+                                                    : TODO : <span style="color: limegreen;">Yes</span> ou <span style="color: red;">No</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div> There are no events yet...</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
