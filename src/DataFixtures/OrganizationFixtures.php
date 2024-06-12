@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Event;
 use App\Entity\Organization;
+use App\Entity\Project;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -19,6 +20,8 @@ class OrganizationFixtures extends Fixture implements DependentFixtureInterface
             ->setPresentation('Symfony SAS is the company behind Symfony, the PHP Open-Source framework.')
         ;
 
+        $organization->addProject($this->getReference(ProjectFixtures::SymfonyLive, Project::class));
+
         for ($i = 2015; $i <= 2025; $i++) {
             $organization->addEvent($this->getReference("Event_{$i}", Event::class));
         }
@@ -31,6 +34,7 @@ class OrganizationFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             EventFixtures::class,
+            ProjectFixtures::class,
         ];
     }
 }
