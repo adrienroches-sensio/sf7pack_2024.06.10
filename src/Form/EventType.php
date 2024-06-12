@@ -27,12 +27,12 @@ class EventType extends AbstractType
             ])
             ->add('organizations', EntityType::class, [
                 'class' => Organization::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'multiple' => true,
             ])
             ->add('project', EntityType::class, [
                 'class' => Project::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
             ])
         ;
     }

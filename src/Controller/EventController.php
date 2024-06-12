@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Form\EventType;
 use App\Repository\EventRepository;
 use App\Routing\EventRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
@@ -17,28 +19,27 @@ use Symfony\Component\Routing\Requirement\Requirement;
 class EventController extends AbstractController
 {
     #[Route(
-        path: '/event/{name}/{start}/{end}',
+        path: '/events/new',
         name: 'app_event_new',
-        requirements: [
-            'name' => EventRequirement::NAME,
-            'start' => EventRequirement::DATE,
-            'end' => EventRequirement::DATE,
-        ],
+        methods: ['GET', 'POST']
     )]
-    public function newEvent(string $name, string $start, string $end, EntityManagerInterface $em): Response
+    public function newEvent(Request $request, EntityManagerInterface $em): Response
     {
-        $event = (new Event())
-            ->setName($name)
-            ->setDescription('Some generic description')
-            ->setAccessible(true)
-            ->setStartAt(new \DateTimeImmutable($start))
-            ->setEndAt(new \DateTimeImmutable($end))
-        ;
+        $event = new Event();
 
-        $em->persist($event);
-        $em->flush();
+        $form = $this->createForm(EventType::class, $event);
 
-        return new Response('Event created');
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($event);
+            $em->flush();
+
+            return $this->redirectToRoute('app_event_show', ['id' => $event->getId()]);
+        }
+
+        return $this->render('event/new_event.html.twig', [
+            'form' => $form,
+        ]);
     }
 
     #[Route('/events', name: 'app_event_list', methods: ['GET'])]
