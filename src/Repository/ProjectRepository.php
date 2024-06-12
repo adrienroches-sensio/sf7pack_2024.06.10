@@ -16,6 +16,14 @@ class ProjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Project::class);
     }
 
+    /**
+     * @return list<Project>
+     */
+    public function list(): array
+    {
+        return $this->findAll();
+    }
+
     //    /**
     //     * @return Project[] Returns an array of Project objects
     //     */
