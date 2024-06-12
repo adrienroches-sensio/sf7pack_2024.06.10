@@ -41,8 +41,8 @@ class EventController extends AbstractController
         return new Response('Event created');
     }
 
-    #[Route('/api/events', name: 'api_event_list', methods: ['GET'])]
-    public function list(EventRepository $eventRepository): JsonResponse
+    #[Route('/events', name: 'app_event_list', methods: ['GET'])]
+    public function list(EventRepository $eventRepository): Response
     {
         $events = [];
 
@@ -57,14 +57,14 @@ class EventController extends AbstractController
     }
 
     #[Route(
-        '/api/events/{id}',
-        name: 'api_event_show',
+        '/events/{id}',
+        name: 'app_event_show',
         requirements: [
             'id' => Requirement::DIGITS,
         ],
         methods: ['GET']
     )]
-    public function show(Event $event): JsonResponse
+    public function show(Event $event): Response
     {
         return $this->json(['id' => $event->getId(), 'name' => $event->getName()]);
     }
