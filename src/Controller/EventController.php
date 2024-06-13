@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Event\Search\DatabaseEventSearch;
+use App\Event\Search\EventSearchInterface;
 use App\Form\EventType;
-use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Requirement\Requirement;
 class EventController extends AbstractController
 {
     public function __construct(
-        private readonly DatabaseEventSearch $databaseEventSearch,
+        private readonly EventSearchInterface $eventSearch,
     ) {
     }
 
@@ -52,7 +52,7 @@ class EventController extends AbstractController
         $name = $request->query->get('name');
 
         return $this->render('event/list_events.html.twig', [
-            'events' => $this->databaseEventSearch->searchByName($name),
+            'events' => $this->eventSearch->searchByName($name),
         ]);
     }
 
