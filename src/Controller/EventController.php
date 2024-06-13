@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Event;
-use App\Event\Search\DatabaseEventSearch;
 use App\Event\Search\EventSearchInterface;
+use App\EventDispatcher\EventCreatedEvent;
 use App\Form\EventType;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,8 +20,8 @@ use Symfony\Component\Routing\Requirement\Requirement;
 class EventController extends AbstractController
 {
     public function __construct(
-        private readonly DatabaseEventSearch $databaseEventSearch,
         private readonly EventSearchInterface $eventSearch,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -39,6 +40,8 @@ class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($event);
             $em->flush();
+
+            $this->eventDispatcher->dispatch(new EventCreatedEvent($event));
 
             return $this->redirectToRoute('app_event_show', ['id' => $event->getId()]);
         }
