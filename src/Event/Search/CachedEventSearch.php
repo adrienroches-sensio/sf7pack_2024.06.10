@@ -17,7 +17,7 @@ final class CachedEventSearch implements EventSearchInterface
 
     public function searchByName(?string $name = null): array
     {
-        return $this->cache->get(md5($name), function (ItemInterface $item) use ($name) {
+        return $this->cache->get(md5($name ?? '_all'), function (ItemInterface $item) use ($name) {
             $item->expiresAfter(3600); // Cache for 1 hour
 
             return $this->inner->searchByName($name);

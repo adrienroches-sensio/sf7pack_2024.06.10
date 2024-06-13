@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Event;
 use App\Entity\Organization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,6 +15,18 @@ class OrganizationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Organization::class);
+    }
+
+    public function searchOneByName(string $name): Organization|null
+    {
+        $qb = $this->createQueryBuilder('organization');
+
+        $qb
+            ->andWhere($qb->expr()->eq('organization.name', ':name'))
+            ->setParameter('name', $name)
+        ;
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     //    /**

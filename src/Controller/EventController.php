@@ -54,7 +54,7 @@ class EventController extends AbstractController
         $name = $request->query->get('name');
 
         return $this->render('event/list_events.html.twig', [
-            'events' => $this->databaseEventSearch->searchByName($name),
+            'events' => $this->eventSearch->searchByName($name),
         ]);
     }
 

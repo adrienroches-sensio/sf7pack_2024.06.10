@@ -24,7 +24,13 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Event\Search\EventSearchInterface:
-        alias: 'App\Event\Search\ApiEventSearch'
+        alias: 'App\Event\Search\ChainedEventSearch'
 
     App\Event\Search\CachedEventSearch:
-        decorates: 'App\Event\Search\EventSearchInterface'
+        decorates: 'App\Event\Search\ApiEventSearch'
+
+    App\Event\Search\ChainedEventSearch:
+        autowire: false
+        arguments:
+            $apiEventSearch: '@App\Event\Search\ApiEventSearch'
+            $databaseEventSearch: '@App\Event\Search\DatabaseEventSearch'

@@ -71,6 +71,18 @@ class EventRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function searchOneByName(string $name): Event|null
+    {
+        $qb = $this->createQueryBuilder('event');
+
+        $qb
+            ->andWhere($qb->expr()->eq('event.name', ':name'))
+            ->setParameter('name', $name)
+        ;
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
 //    /**
 //     * @return Event[] Returns an array of Event objects
 //     */
