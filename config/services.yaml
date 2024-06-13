@@ -24,4 +24,7 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Event\Search\EventSearchInterface:
-        alias: 'App\Event\Search\DatabaseEventSearch'
+        alias: 'App\Event\Search\ApiEventSearch'
+
+    App\Event\Search\CachedEventSearch:
+        decorates: 'App\Event\Search\EventSearchInterface'
