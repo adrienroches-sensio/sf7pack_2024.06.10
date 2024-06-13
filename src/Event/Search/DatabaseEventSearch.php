@@ -10,7 +10,6 @@ final class DatabaseEventSearch implements EventSearchInterface
 {
     public function __construct(
         private readonly EventRepository $eventRepository,
-        private readonly int $maxResult,
     ) {
     }
 
