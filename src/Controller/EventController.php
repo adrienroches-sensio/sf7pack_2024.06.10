@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Event\Search\DatabaseEventSearch;
 use App\Form\EventType;
 use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,6 +17,11 @@ use Symfony\Component\Routing\Requirement\Requirement;
 
 class EventController extends AbstractController
 {
+    public function __construct(
+        private readonly DatabaseEventSearch $databaseEventSearch,
+    ) {
+    }
+
     #[Route(
         path: '/events/new',
         name: 'app_event_new',
@@ -41,10 +47,12 @@ class EventController extends AbstractController
     }
 
     #[Route('/events', name: 'app_event_list', methods: ['GET'])]
-    public function list(EventRepository $eventRepository): Response
+    public function list(Request $request): Response
     {
+        $name = $request->query->get('name');
+
         return $this->render('event/list_events.html.twig', [
-            'events' => $eventRepository->list(),
+            'events' => $this->databaseEventSearch->searchByName($name),
         ]);
     }
 
