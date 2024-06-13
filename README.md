@@ -22,3 +22,6 @@ Then start the server with :
 ```bash
 $ symfony serve -d
 ```
+
+Then you can log in with :
+* admin / admin
