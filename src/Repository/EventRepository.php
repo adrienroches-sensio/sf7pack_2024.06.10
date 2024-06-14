@@ -23,7 +23,18 @@ class EventRepository extends ServiceEntityRepository
      */
     public function list(): array
     {
-        return $this->findAll();
+        $qb = $this->createQueryBuilder('event');
+
+        $qb
+            ->leftJoin('event.organizations', 'organizations')
+            ->leftJoin('event.project', 'project')
+            ->leftJoin('event.volunteers', 'volunteers')
+            ->addSelect('organizations')
+            ->addSelect('project')
+            ->addSelect('volunteers')
+        ;
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -66,6 +77,12 @@ class EventRepository extends ServiceEntityRepository
         $qb
             ->andWhere($qb->expr()->like('event.name', ':name'))
             ->setParameter('name', '%'.$name.'%')
+            ->leftJoin('event.organizations', 'organizations')
+            ->leftJoin('event.project', 'project')
+            ->leftJoin('event.volunteers', 'volunteers')
+            ->addSelect('organizations')
+            ->addSelect('project')
+            ->addSelect('volunteers')
         ;
 
         return $qb->getQuery()->getResult();

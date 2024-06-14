@@ -10,7 +10,7 @@ use App\Repository\EventRepository;
 use App\Repository\OrganizationRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Ev;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use function array_map;
 
 final class TransformIntoDatabaseEntity
@@ -19,6 +19,7 @@ final class TransformIntoDatabaseEntity
         private readonly EntityManagerInterface $entityManager,
         private readonly EventRepository $eventRepository,
         private readonly OrganizationRepository $organizationRepository,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
     ) {
     }
 
@@ -30,7 +31,9 @@ final class TransformIntoDatabaseEntity
         /** @var array<string, Organization> $organizations */
         $organizations = [];
 
-        return array_map(function (mixed $eventResult) use ($organizations): Event {
+        $isOrganizerOrWebsite = $this->authorizationChecker->isGranted('ROLE_WEBSITE') || $this->authorizationChecker->isGranted('ROLE_ORGANIZER');
+
+        return array_map(function (mixed $eventResult) use ($organizations, $isOrganizerOrWebsite): Event {
             $event = $this->eventRepository->searchOneByName($eventResult['name']);
 
             if (null !== $event) {
@@ -56,14 +59,19 @@ final class TransformIntoDatabaseEntity
                         ->setPresentation($organizationResult['presentation'])
                         ->setCreatedAt(new DateTimeImmutable($organizationResult['createdAt']))
                     ;
-                    $this->entityManager->persist($organization);
+
+                    if (true === $isOrganizerOrWebsite) {
+                        $this->entityManager->persist($organization);
+                    }
+
                     $organizations[$organizationResult['name']] = $organization;
                 }
             }
 
-
-            $this->entityManager->persist($event);
-            $this->entityManager->flush();
+            if (true === $isOrganizerOrWebsite) {
+                $this->entityManager->persist($event);
+                $this->entityManager->flush();
+            }
 
             return $event;
         }, $searchResults['hydra:member']);
