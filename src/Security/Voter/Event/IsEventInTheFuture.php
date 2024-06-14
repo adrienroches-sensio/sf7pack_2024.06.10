@@ -8,20 +8,21 @@ use App\Entity\Event;
 use App\Security\Permission;
 use DateTimeImmutable;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
-final class IsEventInTheFuture extends Voter
+final class IsEventInTheFuture implements VoterInterface
 {
-    protected function supports(string $attribute, mixed $subject): bool
-    {
-        return Permission::EVENT_EDIT === $attribute && $subject instanceof Event;
-    }
-
     /**
      * @param Event $subject
      */
-    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
+    public function vote(TokenInterface $token, mixed $subject, array $attributes): int
     {
-        return $subject->getStartAt() > new DateTimeImmutable('today');
+        $attribute = $attributes[0];
+
+        if ($attribute !== Permission::EVENT_EDIT || !$subject instanceof Event) {
+            return self::ACCESS_ABSTAIN;
+        }
+
+        return $subject->getStartAt() > new DateTimeImmutable('today') ? self::ACCESS_ABSTAIN : self::ACCESS_DENIED;
     }
 }

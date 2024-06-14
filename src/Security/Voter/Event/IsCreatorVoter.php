@@ -8,31 +8,32 @@ use App\Entity\Event;
 use App\Entity\User;
 use App\Security\Permission;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-final class IsCreatorVoter extends Voter
+final class IsCreatorVoter implements VoterInterface
 {
-    protected function supports(string $attribute, mixed $subject): bool
-    {
-        return Permission::EVENT_EDIT === $attribute && $subject instanceof Event;
-    }
-
     /**
      * @param Event $subject
      */
-    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
+    public function vote(TokenInterface $token, mixed $subject, array $attributes): int
     {
+        $attribute = $attributes[0];
+
+        if ($attribute !== Permission::EVENT_EDIT || !$subject instanceof Event) {
+            return self::ACCESS_ABSTAIN;
+        }
+
         $user = $token->getUser();
 
         if (!$user instanceof UserInterface) {
-            return false;
+            return self::ACCESS_ABSTAIN;
         }
 
         if (!$user instanceof User) {
-            return false;
+            return self::ACCESS_ABSTAIN;
         }
 
-        return $subject->getCreatedBy()->getId() === $user->getId();
+        return $subject->getCreatedBy()->getId() === $user->getId() ? self::ACCESS_GRANTED : self::ACCESS_ABSTAIN;
     }
 }
