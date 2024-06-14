@@ -8,6 +8,8 @@ use App\Entity\Event;
 use App\Event\Search\EventSearchInterface;
 use App\EventDispatcher\EventCreatedEvent;
 use App\Form\EventType;
+use App\Security\Permission;
+use App\Security\Voter\Event\IsCreatorVoter;
 use App\Security\Voter\EventVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -40,7 +42,7 @@ class EventController extends AbstractController
     public function newEvent(Request $request, EntityManagerInterface $em, Event|null $event = null): Response
     {
         if (null !== $event) {
-            $this->denyAccessUnlessGranted(EventVoter::EDIT, $event);
+            $this->denyAccessUnlessGranted(Permission::EVENT_EDIT, $event);
         }
 
         $event ??= new Event();
