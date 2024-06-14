@@ -16,6 +16,14 @@ class VolunteerRepository extends ServiceEntityRepository
         parent::__construct($registry, Volunteer::class);
     }
 
+    /**
+     * @return list<Volunteer>
+     */
+    public function list(): array
+    {
+        return $this->findAll();
+    }
+
     //    /**
     //     * @return Volunteer[] Returns an array of Volunteer objects
     //     */

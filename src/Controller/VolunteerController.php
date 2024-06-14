@@ -6,8 +6,10 @@ use App\Entity\Event;
 use App\Entity\Project;
 use App\Entity\Volunteer;
 use App\Form\VolunteerType;
+use App\Repository\VolunteerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -55,5 +57,30 @@ class VolunteerController extends AbstractController
         return $this->render('volunteer/new_volunteer.html.twig', [
             'form' => $form,
         ]);
+    }
+
+    #[Route(
+        path: '/api/volunteers',
+        name: 'api_list_volunteers',
+        methods: ['GET'],
+    )]
+    public function getVolunteersApi(VolunteerRepository $repository): JsonResponse
+    {
+        $volunteers = $repository->list();
+
+        $result = [];
+
+        foreach ($volunteers as $volunteer) {
+            $result[] = [
+                'id' => $volunteer->getId(),
+                'name' => $volunteer->getForUser()->getUsername(),
+                'event' => $volunteer->getEvent()->getName(),
+                'project' => $volunteer->getEvent()->getProject()->getName(),
+                'start' => $volunteer->getStartAt()->format('c'),
+                'end' => $volunteer->getEndAt()->format('c'),
+            ];
+        }
+
+        return $this->json($result, Response::HTTP_OK);
     }
 }
