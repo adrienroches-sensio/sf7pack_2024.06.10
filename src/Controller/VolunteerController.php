@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class VolunteerController extends AbstractController
 {
@@ -68,19 +69,8 @@ class VolunteerController extends AbstractController
     {
         $volunteers = $repository->list();
 
-        $result = [];
-
-        foreach ($volunteers as $volunteer) {
-            $result[] = [
-                'id' => $volunteer->getId(),
-                'name' => $volunteer->getForUser()->getUsername(),
-                'event' => $volunteer->getEvent()->getName(),
-                'project' => $volunteer->getEvent()->getProject()->getName(),
-                'start' => $volunteer->getStartAt()->format('c'),
-                'end' => $volunteer->getEndAt()->format('c'),
-            ];
-        }
-
-        return $this->json($result, Response::HTTP_OK);
+        return $this->json($volunteers, context: [
+            'groups' => ['Volunteer'],
+        ]);
     }
 }
