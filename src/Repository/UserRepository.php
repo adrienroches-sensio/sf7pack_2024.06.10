@@ -33,6 +33,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function loadByApiKey(string $apiKey): User
+    {
+        $qb = $this->createQueryBuilder('user');
+
+        $qb
+            ->where($qb->expr()->eq('user.apiKey', ':apiKey'))
+            ->setParameter('apiKey', $apiKey)
+        ;
+
+        return $qb->getQuery()->getSingleResult();
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */
