@@ -24,4 +24,8 @@ $ symfony serve -d
 ```
 
 Then you can log in with :
-* admin / admin
+* user / user [ROLE_USER]
+* website / website [ROLE_WEBSITE]
+* volunteer / volunteer [ROLE_VOLUNTEER]
+* organizer / organizer [ROLE_ORGANIZER]
+* admin / admin [ROLE_ADMIN]

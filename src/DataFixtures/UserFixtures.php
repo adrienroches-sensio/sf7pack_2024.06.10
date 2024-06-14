@@ -9,6 +9,34 @@ use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 class UserFixtures extends Fixture
 {
+    private const USERS = [
+        [
+            'username' => 'user',
+            'password' => 'user',
+            'roles' => ['ROLE_USER'],
+        ],
+        [
+            'username' => 'website',
+            'password' => 'website',
+            'roles' => ['ROLE_WEBSITE'],
+        ],
+        [
+            'username' => 'volunteer',
+            'password' => 'volunteer',
+            'roles' => ['ROLE_VOLUNTEER'],
+        ],
+        [
+            'username' => 'organizer',
+            'password' => 'organizer',
+            'roles' => ['ROLE_ORGANIZER'],
+        ],
+        [
+            'username' => 'admin',
+            'password' => 'admin',
+            'roles' => ['ROLE_ADMIN'],
+        ],
+    ];
+
     public function __construct(
         private readonly PasswordHasherFactoryInterface $passwordHasherFactory
     ) {
@@ -16,14 +44,17 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $user = (new User())
-            ->setUsername('admin')
-            ->setPassword($this->passwordHasherFactory->getPasswordHasher(User::class)->hash('admin'))
-        ;
+        foreach (self::USERS as $userData) {
+            $user = (new User())
+                ->setUsername($userData['username'])
+                ->setPassword($this->passwordHasherFactory->getPasswordHasher(User::class)->hash($userData['password']))
+                ->setRoles($userData['roles'])
+            ;
 
-        $this->addReference('admin', $user);
+            $this->addReference($userData['username'], $user);
+            $manager->persist($user);
+        }
 
-        $manager->persist($user);
         $manager->flush();
     }
 }
