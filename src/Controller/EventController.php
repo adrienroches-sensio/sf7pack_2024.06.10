@@ -8,6 +8,7 @@ use App\Entity\Event;
 use App\Event\Search\EventSearchInterface;
 use App\EventDispatcher\EventCreatedEvent;
 use App\Form\EventType;
+use App\Security\Voter\EventVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bridge\Twig\Attribute\Template;
@@ -38,6 +39,10 @@ class EventController extends AbstractController
     )]
     public function newEvent(Request $request, EntityManagerInterface $em, Event|null $event = null): Response
     {
+        if (null !== $event) {
+            $this->denyAccessUnlessGranted(EventVoter::EDIT, $event);
+        }
+
         $event ??= new Event();
 
         $form = $this->createForm(EventType::class, $event);

@@ -21,7 +21,7 @@ class EventFixtures extends Fixture implements DependentFixtureInterface
                 ->setAccessible(true)
                 ->setStartAt(new DateTimeImmutable("28-03-{$year}"))
                 ->setEndAt(new DateTimeImmutable("29-03-{$year}"))
-                ->setCreatedBy($this->getReference('admin', User::class))
+                ->setCreatedBy($this->getReference('user', User::class))
             ;
 
             $this->addReference("Event_{$year}", $event);
