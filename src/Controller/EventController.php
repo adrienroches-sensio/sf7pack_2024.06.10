@@ -30,9 +30,15 @@ class EventController extends AbstractController
         name: 'app_event_new',
         methods: ['GET', 'POST']
     )]
-    public function newEvent(Request $request, EntityManagerInterface $em): Response
+    #[Route(
+        path: '/events/{id}/edit',
+        name: 'app_event_edit',
+        requirements: ['id' => Requirement::DIGITS],
+        methods: ['GET', 'POST']
+    )]
+    public function newEvent(Request $request, EntityManagerInterface $em, Event|null $event = null): Response
     {
-        $event = new Event();
+        $event ??= new Event();
 
         $form = $this->createForm(EventType::class, $event);
 

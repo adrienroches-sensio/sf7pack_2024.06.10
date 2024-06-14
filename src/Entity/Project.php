@@ -37,14 +37,12 @@ class Project
      * @var Collection<int, Organization>
      */
     #[Assert\Count(min: 1)]
-    #[Assert\Valid()]
     #[ORM\ManyToMany(targetEntity: Organization::class, inversedBy: 'projects')]
     private Collection $organizations;
 
     /**
      * @var Collection<int, Event>
      */
-    #[Assert\Valid()]
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'project')]
     private Collection $events;
 
