@@ -47,6 +47,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'createdBy')]
     private Collection $events;
 
+    #[ORM\Column(length: 255)]
+    private ?string $apiKey = null;
+
     public function __construct()
     {
         $this->volunteers = new ArrayCollection();
@@ -184,6 +187,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $event->setCreatedBy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getApiKey(): ?string
+    {
+        return $this->apiKey;
+    }
+
+    public function setApiKey(string $apiKey): static
+    {
+        $this->apiKey = $apiKey;
 
         return $this;
     }
