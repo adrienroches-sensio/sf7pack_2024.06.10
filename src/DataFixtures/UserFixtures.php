@@ -18,7 +18,10 @@ class UserFixtures extends Fixture
     {
         $user = (new User())
             ->setUsername('admin')
-            ->setPassword($this->passwordHasherFactory->getPasswordHasher(User::class)->hash('admin'));
+            ->setPassword($this->passwordHasherFactory->getPasswordHasher(User::class)->hash('admin'))
+        ;
+
+        $this->addReference('admin', $user);
 
         $manager->persist($user);
         $manager->flush();
